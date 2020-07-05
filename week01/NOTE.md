@@ -1,188 +1,57 @@
  学习笔记
 
-# 预习内容
+# 作业 & 作答
 
 > 如果你要写一本关于整个前端开发的书，请你列出你的目录
 
-### 目录>>>
-- 前端开发的定义
-  - 前端初识
-    - 使用环境
-      - 浏览器
-      - 服务端
-    - 页面
-      - 组成
-        - 结构描述html
-        - 样式文件css
-        - 逻辑、事件、操作描述javascript
+见[我的前端目录.xmind](/我的前端目录.xmind)
 
-  - 浏览器原理
+&emsp;
 
-  - HTML标签详解
-    - 基础知识
-      - 版本
-      - 结构
-      - 语法
-        - 标签
-        - 内容
-        - html转义字符
-      - 编码
-      - 与XML、XHTML的关系
-    - 基本结构
-      - body
-      - head
-    - 布局、结构化
-      - header
-      - footer
-      - aside
-      - div
-      - h1 ~ h6
-      - p
-      - span、b、strong、em、sub、sup
-      - table、thead、tbody、tr、td、th
-      - i
-      - pre、code
-      - ol、ul、li
-      - hr
-      - br
-    - 功能标签(带有默认逻辑的标签)
-      - a
-      - button
-      - iframe
-      - img
-      - link
-      - meta
-      - script
-      - title
-    - 数据、表单
-      - form
-      - input
-      - select
-      - textarea
-      - button[type=submit]
-    - 多媒体
-      - audio
-      - video
-    - 画布
-      - canvas
-    - SVG
-      - svg
-      - path
+> 和 winter 老师课件里的脑图或者课程目录（课程表）做对比，思考一下为什么会有差别？
 
-  - CSS样式表详解
-    - 选择器
-      - 元素/标签
-      - 类
-      - 属性
-      - 子节点
-      - 兄弟节点
-      - 相邻元素
-      - 伪类
-      - 特殊选择器
-        - :root
-    - 媒体查询（响应式）
-    - 优先级
-    - 样式继承
-    - 样式
-      - 盒模型:
-        - 定位(position):
-          - 绝对(absolute)
-          - 相对(relative)
-          - 浮动(fixed)
-          - 静止(static)
-        - 显示类型(display):
-          - 块级(block)
-          - 行内(inline)
-          - 行内块级(inline-block)
-          - 弹性(flex)
-          - 表格类(table、table-row、table-cell……)
-          - 列表类(list、list-item)
-          - 不显示(none)
-        - 外间隔(margin)
-        - 盒模型模式(box-sizing):
-          - border-box
-          - content-box
-        - 边框(border)
-        - 内间隔(padding)
-        - 宽高(width、height)
-        
-      - 文本对齐方式(text-align):
-        - left
-        - center
-        - right
-        
-      - 纵向对齐方式(vertical-align)：
-        - top
-        - middle
-        - base-line
-        - bottom
-        - sub
-        
-      - 变形(transform)：
-        - ……
-      - 浮动(float)
-        - left
-        - right
-      - 清除浮动(clear)
-        - left
-        - right
-        - both
-    
-    - 文本类样式
-      - 字体
-      - 字号
-      - 粗细
-      - 颜色
-      - 换行方式
-      - 断词方式
-    
-    - 超出的处理方式(overflow)
-    
-    - 阴影
-      - 字阴影、盒阴影
-      - 内外
-    
-    - 长度单位
-      - px
-      - em
-      - rem
-      - %
-      
-    - 颜色
-      - 颜色名: red、violetblue
-      - 颜色代码: #000000 ~ #ffffff、#000 ~ #FFF，不区分大小写
-      - rgb、rgba
-      - 可见度(opacity)
-      - 渐变的浏览器表达
-      
-    - 样式函数
-      - 计算calc
-      - 变量var
-    
-    - 浏览器默认样式
-    
-    - CSS动画的实现
-      - transition
-      - @keyframes
-      - 曲线函数
-    
-  - JavaScript详解
-    - 基础类型
-      - 文本
-      - 数字
-      - 布尔
-      - undefined
-      - null
-      - 对象
-      - 函数
-    - 运算符
-      - 赋值
-      - 判断
-      - 循环
-    - 语法
-    - 事件
-    - 回调函数
-    - 运行时环境
+首先概念上弄错了，winter指的前端技术，是“web前端技术”，我是按照前端开发技术，从职业角度去考虑的
+&emsp;
 
-  - 混合式开发
-  - 服务端环境
+而且，既然是要写书，肯定是由浅入深，所以我单独分了一个分支来浅讲前端技术
+&emsp;
+
+实际上，应该按照winter老师的整理思路，重整前端的知识脑图
+&emsp;
+
+对比winter老师的图，我发现了我许多概念的不清晰和不知道，比如：
+  - HTML分支：
+    - HTML可以按照语言、SGML、XML维度去解析
+    - SGML概念
+  - JavaScript分支：
+    - JavaScript可以按照语法、语义、运行时的维度去解析
+    - Lex分支的所有知识点
+    - Syntax分支下的所有的知识点
+    - 语义的定义
+    - 运行时的概念及包含所有知识
+  - CSS分支：
+    - CSS的维度分法
+    - @规则是什么意思
+    - 选择器的维度
+    - 机制中的排版
+  
+完全想不到的是，winter老师的运行环境，是直接使用了API作为维度，想想也是，API即环境。
+
+&emsp;
+
+# 总结
+- 本周是去新公司的第一周，心气还算足，但是在公司感觉没什么目标，总之是先熟悉了:
+  - @vue/cli
+    - vue create
+    - vue ui
+  - vxe-table
+  - vue递归组件
+- 本周学习效率不高，没有养成习惯，下班到家后总是懒惰、懒得开始去思考作业，一而再再而三的拖
+- 思考前端组成的过程，让我意识到了我欠缺提炼总结和分类的经验，并且对前端技术的范围、细节了解的很糟糕
+- 刷算法去leetcode，200道题算入门……
+- 算法基本套路：动态规划、贪心、递归、回溯
+- 算法书推荐：《算法导论》
+- 刷算法，先刷够数量再做规划
+- B站节目：《前端会客厅》
+- winter推荐的查资料方式举例——闭包（closure）：
+  closure -> google -> wiki -> history -> scholar.google.com
