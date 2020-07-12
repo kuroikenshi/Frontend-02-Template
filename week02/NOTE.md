@@ -145,7 +145,7 @@ EBNF、ABNF等扩展写法，一般每种语言自己会定义一种
 # String语法
 "abc"、'abc'、\`abc\`
 
-![UTF-8编码的结构](./imgs/utf8.png)
+![UTF-8编码的结构](https://github.com/kuroikenshi/Frontend-02-Template/blob/master/week02/imgs/utf8.png)
 
 
 # Object
