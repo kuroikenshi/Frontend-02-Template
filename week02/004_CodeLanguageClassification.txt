@@ -1,0 +1,17 @@
+数据描述型：
+  JSON、XML、SQL、CSS、HTML
+
+编程语言：
+  Python、C、C++、C#、JAVA、Basic、Bash(Shell)、CMD、PowerShell、JS
+
+声明式语言：
+  JSON、XML、HTML、SQL、CSS
+
+命令式语言：
+  Python、C、C++、C#、JAVA、Basic、Bash(Shell)、CMD、PowerShell、JS
+
+不需要编译、书写即运行代码：
+  JSON、XML、HTML、SQL、CSS、Basic、SQL、Python、Bash、CMD、PowerShell、JS
+
+需要编译、需要编译再去运行的代码：
+    C、C++、C#、JAVA

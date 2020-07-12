@@ -1,0 +1,33 @@
+<MultiplicativeExpression>::=
+    <Number>|
+    <MultiplicativeExpression>"*"<Number>|
+    <MultiplicativeExpression>"/"<Number>
+      
+<AddtiveExpression>::=
+    <MultiplicativeExpression>|
+    <AddtiveExpression>"+"<MultiplicativeExpression>|
+    <AddtiveExpression>"-"<MultiplicativeExpression>
+
+<BracketsExpression>::=
+    <AddtiveExpression>|
+    "("<AddtiveExpression>")"|
+    <BracketsExpression>"+"<AddtiveExpression>|
+    <BracketsExpression>"-"<AddtiveExpression>|
+    <BracketsExpression>"*"<AddtiveExpression>|
+    <BracketsExpression>"/"<AddtiveExpression>
+      
+<!--
+### 思路:
+δ = +|-|*|/ 
+a δ (a) δ (a δ b)
+
+### 写的过程中注意到的点:
+* 可迭代，但是不要出现无限迭代，需要停下来，
+  也就是说最终需要落到基础的：数字和运算符、括号上
+* 有顺序，不要出现b还没定义在a中就引用了，造成环形引用
+
+### 疑问:
+* 可选用+-*/中的任意一个，但是必填，是否可以表示成:
+  <["+"|"-"|"*"|"/"]>
+
+-->
