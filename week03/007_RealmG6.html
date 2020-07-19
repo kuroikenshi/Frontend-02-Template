@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+    <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g6-3.5.10/dist/g6.min.js"></script>
+	</head>
+	<body>
+    <div id="container"></div>
+    
+    <script>
+      let treeData = drillDown(window);
+      
+      function getName(o) {
+        var name = Object.prototype.toString.call(o).match(/\[object (.*?)\]/)[1];
+        return name;
+      }
+      
+      function drillDown(currentObj) {
+        /* let children = [];
+        for (o in currentObj) {
+          children.push(o);
+        }
+        
+        if (children.length > 0) {
+          children.map(item => {
+            let node = {
+              id: item.toString()
+            }
+            
+            let c = drillDown(item);
+            if (c !== undefined && c.length != 0) {
+              node.children = c;
+            }
+            
+            if (node['children'] == undefined) {
+              node['children'] = [];
+            }
+            
+            node['children'].push(node);
+          })
+          
+        } */
+        
+        let currentNode = {
+          id: currentObject
+        }
+      }
+      
+      
+      let ddd = {
+        "id": "Modeling Methods",
+        "children": [
+          {
+            "id": "Classification",
+            "children": [
+              { "id": "Logistic regression" },
+              { "id": "Linear discriminant analysis" },
+              { "id": "Rules" },
+              { "id": "Decision trees" },
+              { "id": "Naive Bayes" },
+              { "id": "K nearest neighbor" },
+              { "id": "Probabilistic neural network" },
+              { "id": "Support vector machine" }
+            ]
+          },
+          {
+            "id": "Consensus",
+            "children": [
+              {
+                "id": "Models diversity",
+                "children": [
+                  { "id": "Different initializations" },
+                  { "id": "Different parameter choices" },
+                  { "id": "Different architectures" },
+                  { "id": "Different modeling methods" },
+                  { "id": "Different training sets" },
+                  { "id": "Different feature sets" }
+                ]
+              },
+              {
+                "id": "Methods",
+                "children": [
+                  { "id": "Classifier selection" },
+                  { "id": "Classifier fusion" }
+                ]
+              },
+              {
+                "id": "Common",
+                "children": [
+                  { "id": "Bagging" },
+                  { "id": "Boosting" },
+                  { "id": "AdaBoost" }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "Regression",
+            "children": [
+              { "id": "Multiple linear regression" },
+              { "id": "Partial least squares" },
+              { "id": "Multi-layer feedforward neural network" },
+              { "id": "General regression neural network" },
+              { "id": "Support vector regression" }
+            ]
+          }
+        ]
+      };
+  
+      const width = document.getElementById('container').scrollWidth;
+      const height = document.getElementById('container').scrollHeight || 500;
+      
+      const graph = new G6.TreeGraph({
+            container: 'container',
+            width,
+            height,
+            modes: {
+              default: [
+                {
+                  type: 'collapse-expand',
+                  onChange: function onChange(item, collapsed) {
+                    const data = item.get('model').data;
+                    data.collapsed = collapsed;
+                    return true;
+                  },
+                },
+                'drag-canvas',
+                'zoom-canvas',
+              ],
+            },
+            defaultNode: {
+              size: 26,
+              anchorPoints: [
+                [0, 0.5],
+                [1, 0.5],
+              ],
+              style: {
+                fill: '#C6E5FF',
+                stroke: '#5B8FF9',
+              },
+            },
+            defaultEdge: {
+              type: 'cubic-horizontal',
+              style: {
+                stroke: '#A3B1BF',
+              },
+            },
+            layout: {
+              type: 'mindmap',
+              direction: 'H',
+              getHeight: () => {
+                return 16;
+              },
+              getWidth: () => {
+                return 16;
+              },
+              getVGap: () => {
+                return 10;
+              },
+              getHGap: () => {
+                return 50;
+              },
+            },
+          });
+      
+          let centerX = 0;
+          graph.node(function(node) {
+            if (node.id === 'Modeling Methods') {
+              centerX = node.x;
+            }
+      
+            return {
+              label: node.id,
+              labelCfg: {
+                position:
+                  node.children && node.children.length > 0
+                    ? 'left'
+                    : node.x > centerX
+                    ? 'right'
+                    : 'left',
+                offset: 5,
+              },
+            };
+          });
+      
+          graph.data(ddd);
+          graph.render();
+          graph.fitView();
+        
+    </script>
+	</body>
+</html>
