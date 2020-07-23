@@ -132,3 +132,56 @@ match('abcabdef');
 
 这个行为在状态机里可以叫做 **reConsume** ，大概相当于 *重新使用* 这么一个逻辑
 
+> 选作：字符串KMP算法自己调查一下，实现未定pattern的find方法
+
+
+&emsp;
+# HTTP请求
+
+禁用require("http")，因为都帮你做了，咱们这里用require("net")
+
+## TCP与IP
+
+- 基于流，没有分割单位，只保证顺序是正确的
+- 端口: 区分流到软件
+- 传输数据包
+- 通过ip地址找到应该从哪儿到哪儿
+
+底层使用libnet和libpcap的c++的库
+- libnet用来封包、解包等包处理，发送
+- libpacp用来抓包  
+
+## HTTP
+
+区分与TCP协议的对等的关系，无所谓发送顺序  
+HTTP必须由客户端发起一个请求，服务端回复响应  
+是基于TCP封装的一种更高级的协议  
+
+> http协议：是文本型协议，内容为字符串
+
+### Request的结构：
+- Request line:  
+    为**一行**结构，由三部分组成，基本格式为：`{Method} {Path} HTTP/{HttpVersion}`  
+    实例：`POST / HTTP/1.1`，其中：  
+    - `Method`为请求类型，最常使用GET和POST类型，也有许多其他类型比如HEAD、DELETE之类  
+    - `PATH`为本次请求的相对路径  
+    - `HttpVersion`是当前应用HTTP的协议版本，`1.1`是一个比较老的版本，相关参数比较简单，以此举例  
+
+- Headers:  
+    为**多行结构**，每行以**冒号**分隔的一个键值对，行数不固定，以一个**空行**为结束符  
+    实例：  
+```
+Host: 127.0.0.1
+Content-Type: application/x-www-form-urlencoded  
+（这里有空行）
+```
+
+- Body:
+    结构由Headers中的Content-Type决定
+    > 所有HTTP里边的换行，都是由`\r\n`这两个字符组成的
+
+> STEP1: 实现http请求 -> 第10小节练习 010_client.js
+
+### Response
+
+## 服务端准备
