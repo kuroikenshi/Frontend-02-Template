@@ -238,3 +238,17 @@ Transfer-Encoding: chunked
 TODO: 自己查一查Transfer-Encoding的可选值
 ```
 
+&emsp;
+# HTML解析
+
+## HTML标准：Tokenization
+1. FSM(有限状态机)实现HTML解析
+2. 解析标签
+    - 开始标签
+    - 结束标签
+    - 自封闭标签
+    - (暂时忽略属性)
+3. 创建元素
+4. 处理属性
+5. 构建dom树
+
