@@ -219,6 +219,13 @@ Transfer-Encoding: chunked
 (空行)
 ```
 
+&emsp;  
+&emsp;  
+&emsp;  
+<span style="color: red;">**这之后的内容，请配合week04下源码查看，编号对应视频小节编号**</span>  
+&emsp;  
+&emsp;  
+&emsp;  
 
 ## 服务端准备
 使用http模块监听指定端口  
@@ -254,5 +261,7 @@ TODO: 自己查一查Transfer-Encoding的可选值
     - 单引号
     - 双引号
     - 无引号
-6. 
-
+6. 使用出入栈，组成element树
+7. 补全之前忽略的文本节点的处理  
+    
+    **注意：文本节点因为是一个一个过来的，所以连续的要合并**
