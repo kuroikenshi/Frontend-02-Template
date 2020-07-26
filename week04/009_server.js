@@ -6,7 +6,10 @@ http.createServer((req, resp) => {
   req.on('error', (err) => {
     console.error(err);
   }).on('data', (chunk) => {
-    body.push(chunk.toString());
+    // body.push比如传入buffer数组或者是Uint8Array
+    // body.push(chunk.toString());
+    // 所以上句改成
+    body.push(chunk);
   }).on('end', () => {
     body = Buffer.concat(body).toString();
 

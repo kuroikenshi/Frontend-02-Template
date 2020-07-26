@@ -173,15 +173,68 @@ HTTP必须由客户端发起一个请求，服务端回复响应
 ```
 Host: 127.0.0.1
 Content-Type: application/x-www-form-urlencoded  
-（这里有空行）
+(这里有空行)
 ```
 
 - Body:
     结构由Headers中的Content-Type决定
     > 所有HTTP里边的换行，都是由`\r\n`这两个字符组成的
 
-> STEP1: 实现http请求 -> 第10小节练习 010_client.js
+### Response的结构：
+- Status Line:
+    为**一行结构**，三部分组成，基本格式为：`HTTP/{HttpVersion} {StatusCode} {StatusMsg}`  
+    实例：`HTTP/1.1 200 OK`  
+    其中：  
+    - `StatusCode`基本规律为：  
+        `200`表示成功  
+        `4xx`表示客户端错误  
+        `5xx`表示服务端错误  
 
-### Response
+- Headers:
+    格式跟Request的完全一致  
+    实例：  
+```
+Content-Type: text/html
+Date: Mon, 23 Dec 2019 06:46:19 GMT
+Connection: keep-alive
+Transfer-Encoding: chunked
+(这里有空行)
+```  
+
+- Body:
+    常见的nodejs处理过的body为chunked-body，格式为：  
+```
+开头一个16进制的数字  
+内容部分  
+16进制的数字  
+内容 ...  
+0数字结尾
+空行
+```  
+    实例：  
+```
+26
+<html><body>Hello World</body></html>
+0
+(空行)
+```
+
 
 ## 服务端准备
+使用http模块监听指定端口  
+收到请求后返回一个成功响应  
+
+## 客户端的构建
+- 创建一个Request的类，处理内部内容
+- send实现
+- receive处理接受到的数据
+- request的
+- responseParser处理器的构造  
+    > 因为response必须被分段构造，所以要有responseParser来*"装配"*  
+
+    因为要分段处理responseText，我们使用状态机来分析文本的结构  
+- response.body的parser构造
+```
+TODO: 自己查一查Transfer-Encoding的可选值
+```
+
