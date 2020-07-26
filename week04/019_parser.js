@@ -1,4 +1,5 @@
 let currentToken = null;
+let currentAttribute = null;
 
 // 输出token用
 function emit(token) {
