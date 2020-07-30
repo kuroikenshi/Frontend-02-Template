@@ -8,15 +8,7 @@ let stack = [{type: 'document', children: []}];
 // 输出token用
 function emit(token) {
   if (token.type === 'text') {
-    if (currentTextNode === null) {
-      currentTextNode = {
-        type: 'text',
-        content: ''
-      }
-      top.children.push(currentTextNode);
-    }
-
-    currentTextNode.content += token.content;
+    return ;
   }
   let top = stack[stack.length - 1];
 
@@ -48,6 +40,7 @@ function emit(token) {
     }
 
     currentTextNode = null;
+
   }
   // 处理结束标签
   else if (token.type === 'endTag') {
@@ -57,7 +50,6 @@ function emit(token) {
     else {
       stack.pop();
     }
-    
     currentTextNode = null;
   }
 }

@@ -193,10 +193,10 @@ void async function(){
 
   let response = await request.send();
 
-  console.log('response>>>', response);
-
   // 正式htmlParse是一个流式解析的过程
   let dom = parser.parseHTML(response.body);
+
+  console.log(dom);
 }();
 
 
