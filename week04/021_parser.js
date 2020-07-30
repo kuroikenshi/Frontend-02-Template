@@ -1,13 +1,12 @@
 let currentToken = null;
 let currentAttribute = null;
 
+let currentTextNode = null;
+
 let stack = [{type: 'document', children: []}];
 
 // 输出token用
 function emit(token) {
-  if (token.type === 'text') {
-    return ;
-  }
   let top = stack[stack.length - 1];
 
   // 处理开始标签
@@ -38,7 +37,6 @@ function emit(token) {
     }
 
     currentTextNode = null;
-
   }
   // 处理结束标签
   else if (token.type === 'endTag') {
@@ -48,7 +46,20 @@ function emit(token) {
     else {
       stack.pop();
     }
+    
     currentTextNode = null;
+  }
+  // 处理文本节点
+  else if (token.type === 'text') {
+    if (currentTextNode === null) {
+      currentTextNode = {
+        type: 'text',
+        content: ''
+      }
+      top.children.push(currentTextNode);
+    }
+
+    currentTextNode.content += token.content;
   }
 }
 
