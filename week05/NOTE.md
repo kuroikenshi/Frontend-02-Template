@@ -28,3 +28,12 @@
   - xxx.xxx#xxx
 
 > 作业：支持复合选择器 & 支持空格的class选择器（复数class）
+
+6. 生成computed属性  
+  - 未解决优先级问题  
+
+7. Specificity计算逻辑（优先级计算）
+
+  [0,     0,  0,    0]  
+  inline  id  class tag  
+  从左到右，优先级依次递减  
