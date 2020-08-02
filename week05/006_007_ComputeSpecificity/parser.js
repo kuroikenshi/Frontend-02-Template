@@ -40,6 +40,7 @@ function match(element, selector) {
   }
   */
 
+  // 复合选择器
   // 作业：支持复合选择器 & 支持空格的class选择器（复数class）
   let queryObject = {};
   // 查找元素选择器
@@ -137,7 +138,69 @@ function match(element, selector) {
     // console.log('---------------\nFINAL -> NG\n');
     return false;
   }
+}
 
+// 计算selector的sp
+function specificity(selector) {
+  var p = [0, 0, 0, 0];
+  var selectorParts = selector.split(' ');
+
+  for (var part of selectorParts) {
+    /*
+    // 简单选择器
+    if (part.charAt(0) === '#') {
+      p[1] += 1;
+    }
+    else if (part.charAt(0) === '.') {
+      p[2] += 1;
+    }
+    else {
+      p[3] += 1;
+    }
+    */
+
+    // --------- 分割线 ---------
+
+    // 复合选择器
+    let queryObject = {};
+    // 查找元素选择器
+    let elResult = selector.match(/([^.#]*)/);
+    queryObject['element'] = elResult !== null ? elResult[1] : '';
+    // id选择器
+    let idResult = selector.match(/#([^.#]*)/);
+    queryObject['id'] = idResult !== null ? idResult[1] : '';
+    // class的list
+    let classResult = selector.match(/\.[^\.#]*/g);
+    queryObject['classList'] = classResult !== null ? classResult.map(str => str.replace('.', '')) : [];
+    // console.log('classList length:', queryObject['classList'].length);
+
+    if (!!queryObject['id']) {
+      p[1] += 1;
+    }
+    if (queryObject['classList'].length > 0) {
+      p[2] += queryObject['classList'].length;
+    }
+    if (!!queryObject['element']) {
+      p[3] += 1;
+    }
+  }
+
+  return p;
+}
+
+// 比较两个元素的sp
+function compare(sp1, sp2) {
+  if (sp1[0] - sp2[0]) {
+    return sp1[0] - sp2[0];
+  }
+  if (sp1[1] - sp2[1]) {
+    return sp1[1] - sp2[1];
+  }
+  if (sp1[2] - sp2[2]) {
+    return sp1[2] - sp2[2];
+  }
+
+  return sp1[3]- sp2[3];
 }
 
 
@@ -172,8 +235,28 @@ function computeCSS(element) {
 
     if (matched) {
       // 如果匹配，我们要加入
-      console.log('Element', element, 'matched rule:', rule, '\n');
-      // TODO
+      // console.log('Element', element, 'matched rule:', rule, '\n');
+      var sp = specificity(rule.selectors[0]);
+      var computedStyle = element.computedStyle;
+      for (var declaration of rule.declarations) {
+        if (!computedStyle[declaration.property]) {
+          computedStyle[declaration.property] = {};
+        }
+
+        // 没有优先级，记录当前属性和优先级
+        if (!computedStyle[declaration.property].specificity) {
+          computedStyle[declaration.property].value = declaration.value;
+          computedStyle[declaration.property].specificity = sp;
+        }
+        // 如果当前优先级比记录优先级高，记录当前属性和优先级
+        else if (compare(computedStyle[declaration.property].specificity, sp) < 0) {
+          computedStyle[declaration.property].value = declaration.value;
+          computedStyle[declaration.property].specificity = sp;
+        }
+        
+      }
+
+      console.log(element.computedStyle);
     }
   }
 }
@@ -207,7 +290,7 @@ function emit(token) {
     computeCSS(element);
 
     top.children.push(element);
-    element.parent = top;   // 对偶操作
+    // element.parent = top;   // 对偶操作
 
     if (!token.isSelfClosing) {
       stack.push(element);
@@ -511,6 +594,7 @@ module.exports.parseHTML = function parseHTML(html){
 
   state = state(EOF);
 
+  return stack[0];
   // // console.log(stack[0]);
 
   // // console.log('\n\n\nStyleRules>>>');
