@@ -42,7 +42,7 @@ class Request {
       }
 
       connection.on('data', (data) => {
-        console.log('data>>>', data.toString(), '<<<END of data');
+        // console.log('data>>>', data.toString(), '<<<END of data');
         parser.receive(data.toString());
 
         if (parser.isFinish) {
@@ -193,7 +193,7 @@ void async function(){
 
   let response = await request.send();
 
-  console.log('response>>>', response);
+  // console.log('response>>>', response);
 
   // 正式htmlParse是一个流式解析的过程
   let dom = parser.parseHTML(response.body);

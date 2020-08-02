@@ -25,9 +25,19 @@ body div #myid{
     width: 100px;
     background-color: #ff5000;
 }
-body div img {
+body div img{
     width: 30px;
     background-color: #ff1111;
+}
+body div.class1.class2{
+    width: 50px;
+    height: 50px;
+    background-color: #ff11ff;
+}
+body div.class1#id2{
+    width: 75px;
+    height: 75px;
+    background-color: #aa11ff;
 }
     </style>
 </head>
@@ -36,6 +46,8 @@ body div img {
         <img id="myid" />
         <img />
     </div>
+    <div class="class1 class2"></div>
+    <div class="class1" id="id2"></div>
 </body>
 </html>`;
 

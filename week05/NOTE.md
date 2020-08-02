@@ -23,3 +23,8 @@
   - .xxx class选择器
   - #xxx id选择器
   - xxx  tagName选择器
+
+5. 复合选择器：
+  - xxx.xxx#xxx
+
+> 作业：支持复合选择器 & 支持空格的class选择器（复数class）
