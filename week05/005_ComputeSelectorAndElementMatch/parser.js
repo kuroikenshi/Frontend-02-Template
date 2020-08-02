@@ -11,7 +11,7 @@ let stack = [{type: 'document', children: []}];
 let rules = [];
 function addCSSRules(text) {
   let ast = css.parse(text);
-  console.log(JSON.stringify(ast, null, '    '));
+  // console.log(JSON.stringify(ast, null, '    '));
   rules.push(...ast.stylesheet.rules);
 }
 
@@ -21,6 +21,8 @@ function match(element, selector) {
     return false;
   }
 
+  /* 
+  // 简单选择器
   if (selector.charAt(0) == "#") {
     var attr = element.attributes.filter(attr => attr.name === "id")[0];
     if (attr && attr.value === selector.replace("#", '')) {
@@ -36,7 +38,106 @@ function match(element, selector) {
   else if (element.tagName === selector) {
     return true;
   }
-  return false;
+  */
+
+  // 作业：支持复合选择器 & 支持空格的class选择器（复数class）
+  let queryObject = {};
+  // 查找元素选择器
+  let elResult = selector.match(/([^.#]*)/);
+  queryObject['element'] = elResult !== null ? elResult[1] : '';
+  // id选择器
+  let idResult = selector.match(/#([^.#]*)/);
+  queryObject['id'] = idResult !== null ? idResult[1] : '';
+  // class的list
+  console.log('selector    >>>', selector);
+  let classResult = selector.match(/\.[^\.#]*/g);
+  queryObject['classList'] = classResult !== null ? classResult.map(str => str.replace('.', '')) : [];
+
+  console.log('queryObject >>>', queryObject);
+  // console.log('\n\n');
+
+  // 需要match的全match了，才认为通过match
+  let matchFlag = 0;
+  let needMatch = 0;
+
+  // 检查tagName <-> element
+  needMatch += 1;
+  if (!queryObject['element']) {
+    needMatch -= 1;
+    console.log('Element -> no need to check');
+  }
+  else if (element.tagName === queryObject['element']) {
+    matchFlag += 1;
+    console.log('Element -> OK');
+  }
+  else {
+    console.log('Element -> NG');
+  }
+
+  // 检查classList <-> classList
+  needMatch += 1;
+  if (queryObject['classList'].length == 0) {
+    needMatch -= 1;
+    console.log('ClassList -> no need to check')
+  }
+  else {
+    let attr = element.attributes.filter(attr => attr.name === "class")[0];
+    let classStr = attr ? attr.value : '';
+    let classList = !!classStr ? classStr.split(' ') : [];
+    let qClassList = queryObject['classList'];
+
+
+    let isUnique = (classList.length == Array.from(new Set(classList)).length) &&
+        (qClassList.length == Array.from(new Set(qClassList)).length);
+
+    // 判断class在element和query中都没有重复，再继续
+    if (isUnique) {
+      let classMatched =
+          classList.length === qClassList.length
+          && 
+          classList.every(a =>
+            qClassList.some(b => a === b)
+          )
+          &&
+          qClassList.every(_b => 
+            classList.some(_a => _a === _b));
+
+      if (classMatched) {
+        matchFlag += 1;
+        console.log('ClassList -> OK');
+      }
+      else {
+        console.log('ClassList -> NG');
+      }
+    } 
+  }
+
+  // 检查id <-> id
+  needMatch += 1;
+  if (!queryObject['id']) {
+    needMatch -= 1;
+    console.log('ID -> not need check');
+  }
+  else {
+    var attr = element.attributes.filter(attr => attr.name === "id")[0];
+    if (attr && attr.value === queryObject['id']) {
+      matchFlag += 1;
+      console.log('ID -> OK');
+    }
+    else {
+      console.log('ID -> NG');
+    }
+  }
+
+  if (needMatch > 0 && needMatch === matchFlag) {
+    console.log('---------------\nFINAL -> OK\n');
+    return true;
+  }
+  else {
+    console.log('---------------\nFINAL -> NG\n');
+    return false;
+  }
+
 }
 
 
@@ -71,7 +172,7 @@ function computeCSS(element) {
 
     if (matched) {
       // 如果匹配，我们要加入
-      console.log('\n\n\n>>> Element', element, '\n-------------------\nmatched rule:', rule, '\n\n\n');
+      console.log('Element <' + element.tagName + '> matched rule:', rule.selectors, '\n');
       // TODO
     }
   }
@@ -96,7 +197,7 @@ function emit(token) {
       if (p !== 'type' && p !== 'tagName') {
         element.attributes.push({
           name: p,
-          value: token['p']
+          value: token[p]
         });
 
       }
@@ -123,7 +224,7 @@ function emit(token) {
     else {
       // 遇到style的结束标签，执行添加css规则的操作
       if (top.tagName === 'style') {
-        console.log('>>>', top.children);
+        // console.log('>>>', top.children);
         addCSSRules(top.children[0].content);
       }
 
@@ -410,10 +511,10 @@ module.exports.parseHTML = function parseHTML(html){
 
   state = state(EOF);
 
-  console.log(stack[0]);
+  // console.log(stack[0]);
 
-  console.log('\n\n\nStyleRules>>>');
-  console.log(rules);
-  console.log('<<<StyleRules\n\n\n');
+  // console.log('\n\n\nStyleRules>>>');
+  // console.log(rules);
+  // console.log('<<<StyleRules\n\n\n');
 }
 
