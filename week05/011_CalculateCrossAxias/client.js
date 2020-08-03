@@ -199,7 +199,7 @@ void async function(){
   // console.log('BODY>>>', response.body);
   let dom = parser.parseHTML(response.body);
 
-  // console.log('DOM>>>', JSON.stringify(dom, null, "    "));
+  console.log('DOM>>>', JSON.stringify(dom, null, "    "));
   // console.log("");
 }();
 
