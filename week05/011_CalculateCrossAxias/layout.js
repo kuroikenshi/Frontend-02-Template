@@ -188,7 +188,7 @@ function layout(element) {
       if (itemStyle[crossSize] !== null && itemStyle[crossSize] !== (void 0)) {
         crossSpace = Math.max(crossSpace, itemStyle[crossSize]);
       }
-      mainSpace -= itemStyle[mainStyle];
+      mainSpace -= itemStyle[mainSize];
     }
   }
 
@@ -250,7 +250,7 @@ function layout(element) {
             itemStyle[mainSize] = (mainSpace / flexTotal) * itemStyle.flex;
           }
           itemStyle[mainStart] = currentMain;
-          itemStyle[mainEnd] = itemStyle[mainStyle] + mainSign * itemStyle[mainSize];
+          itemStyle[mainEnd] = itemStyle[mainSize] + mainSign * itemStyle[mainSize];
           currentMain = itemStyle[mainEnd];
         }
       }
@@ -284,10 +284,103 @@ function layout(element) {
         }
       }
     });
-
-
-    
   }
+
+
+  // 第11小节开始 -------------------------------
+
+  // Compute the cross axis sizes
+  // align-items, align-self
+  var crossSpace;
+
+  if (!style[crossSize]) {
+    crossSpace = 0;
+    elementStyle[crossSize] = 0;
+    for (var i = 0; i < flexLines.length; i++) {
+      elementStyle[crossSize] = elementStyle[crossSize] + flexLines[i].crossSpace;
+    }
+  }
+  else {
+    crossSpace = style[crossSize];
+    for (var i = 0; i < flexLines.length; i++) {
+      crossSpace -= flexLines[i].crossSpace;
+    }
+  }
+
+  // 根据flex-align属性，分配行高
+  if (style.flexWrap === 'wrap-reverse') {
+    crossBase = style[crossSize];
+  }
+  else {
+    crossBase = 0;
+  }
+  var lineSize = style[crossSize] / flexLines.length;
+
+  var step;
+  if (style.alignContent === 'flex-start') {
+    crossBase += 0;
+    step = 0;
+  }
+  if (style.alignContent === 'flex-end') {
+    crossBase += crossSign * crossSpace;
+    step = 0;
+  }
+  if (style.alignContent === 'center') {
+    crossBase += crossSign * crossSpace / 2;
+    step = 0;
+  }
+  if (style.alignContent === 'space-between') {
+    crossBase += 0;
+    step = crossSpace / (flexLines.length - 1);
+  }
+  if (style.alignContent === 'space-around') {
+    step = crossSpace / flexLines.length;
+    crossBase += crossSign * step / 2;
+  }
+  if (style.alignContent === 'stretch') {
+    crossBase += 0;
+    step = 0;
+  }
+  flexLines.forEach(function (items) {
+    var lineCrossSize = style.alignContent === 'stretch' ?
+        items.crossSpace + crossSpace / flexLines.length :
+        items.crossSpace;
+
+    // 循环访问每一行的元素
+    for (var i = 0; i < items.length; i++) {
+      var item= items[i];
+      var itemStyle = getStyle(item);
+
+      var align = itemStyle.alignSelf || style.alignItems;
+
+      if (item === null) {
+        itemStyle[crossSize] = (align === 'stretch') ?
+            lineCrossSize : 0;
+      }
+
+      if (align === 'flex-start') {
+        itemStyle[crossStart] = crossBase;
+        itemStyle[crossEnd] = itemStyle[crossStart] + crossSign * itemStyle[crossSize];
+      }
+      if (align === 'flex-end') {
+        itemStyle[crossEnd] = crossBase + crossSign * lineCrossSize;
+        itemStyle[crossStart] = itemStyle[crossEnd] - crossSign * itemStyle[crossSize];
+      }
+      if (align === 'center') {
+        itemStyle[crossStart] = crossBase + crossSign * (lineCrossSize - itemStyle[crossSign]) / 2;
+        itemStyle[crossEnd] = itemStyle[crossStart] + crossSign * itemStyle[crossSize];
+      }
+
+      if (align === 'stretch') {
+        itemStyle[crossStart] = crossBase;
+        itemStyle[crossEnd] = crossBase + crossSign * (itemStyle[crossSize])
+      }
+    }
+
+    crossBase += crossSign * (lineCrossSize + step);
+  });
+
+  console.log('items>>>', items);
 }
 
 module.exports = layout;
