@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <p>
+      <span class="class" id="id">
+      
+      </span>
+    </p>
+  </div>
+
+  <script>
+    /*
+    编写一个 match 函数。
+    它接受两个参数，第一个参数是一个选择器字符串性质，第二个是一个 HTML 元素。
+    这个元素你可以认为它一定会在一棵 DOM 树里面。通过选择器和 DOM 元素来判断，当前的元素是否能够匹配到我们的选择器。
+    （不能使用任何内置的浏览器的函数，仅通过 DOM 的 parent 和 children 这些 API，来判断一个元素是否能够跟一个选择器相匹配。）
+    以下是一个调用的例子。
+
+    function match(selector, element) {
+        return true;
+    }
+
+    match("div #id.class", document.getElementById("id"));
+    */
+
+    // 按照题设，暂时不理会连接符为：[>, +, ||, ~]，不处理伪类伪元素，不处理逗号，不处理通配符等其他情况。
+    // 按照题设，暂时不理会连接符为：[>, +, ||, ~]，不处理伪类伪元素，不处理逗号，不处理通配符等其他情况。
+    // 按照题设，暂时不理会连接符为：[>, +, ||, ~]，不处理伪类伪元素，不处理逗号，不处理通配符等其他情况。
+    // 重要的事儿说三遍……（其实是因为懒）
+
+    // 从复合选择器中提取简单选择器
+    function getSimpleSelectors(selector) {
+      // 复合选择器
+      let queryObject = {};
+      // 查找元素选择器
+      let elResult = selector.match(/([^.#]*)/);
+      queryObject['element'] = elResult !== null ? elResult[1] : '';
+      // id选择器
+      let idResult = selector.match(/#([^.#]*)/);
+      queryObject['id'] = idResult !== null ? idResult[1] : '';
+      // class的list
+      let classResult = selector.match(/\.[^\.#]*/g);
+      queryObject['classList'] = classResult !== null ? classResult.map(str => str.replace('.', '')) : [];
+
+      return queryObject;
+    }
+
+    // 获取最后一层复合选择器字符串
+    function getLastSimpleStr(str) {
+      let sp = ' ';
+      let arr = str.split(sp);
+      if (arr.length > 1) {
+        return {last: arr[arr.length - 1], left: arr.slice(0, arr.length - 1).join(sp)};
+      }
+      else if (arr.length == 1) {
+        return {last: arr[0], left: null};
+      }
+      else {
+        throw new Error('Failed');
+      }
+      
+    }
+
+    // 针对当前节点，判断是否match
+    function matchThis(simpleSelectors, currentNode, leftSelectorsStr, skippable) {
+      if (!currentNode) {
+        return false;
+      }
+
+      let idMatched, classListMatched, elementMatched;
+      if (simpleSelectors['id']) {
+        idMatched = currentNode.id === simpleSelectors['id'];
+      }
+      else {
+        idMatched = true;
+      }
+
+      if (simpleSelectors['element']) {
+        elementMatched = currentNode.nodeName.toLowerCase() === simpleSelectors['element'].toLowerCase();
+      }
+      else {
+        elementMatched = true;
+      }
+
+      if (simpleSelectors['classList'].length > 0) {
+        classListMatched = simpleSelectors['classList'].reduce((total, current) => {
+          total = total && (Array.from(currentNode.classList).indexOf(current) != -1);
+          return total;
+        }, true);
+      }
+      else {
+        classListMatched = true;
+      }
+
+      if (idMatched && classListMatched && elementMatched) {
+        if (!leftSelectorsStr) {
+          return true;
+        }
+        else {
+          let result = getLastSimpleStr(leftSelectorsStr);
+          let _leftSelectorsStr = result['left'];
+          let lastSimple = result['last'];
+          let _simpleSelectors = getSimpleSelectors(lastSimple);
+
+          // 尝试match上一层
+          return matchThis(_simpleSelectors, currentNode.parentNode, _leftSelectorsStr, true);
+        }
+      } else {
+        if (!skippable) {
+          return false;
+        }
+        else {
+          // 尝试match上一层
+          return matchThis(simpleSelectors, currentNode.parentNode, leftSelectorsStr, true);
+        }
+      }
+
+
+    }
+
+    function match(selector, element) {
+      let result = getLastSimpleStr(selector);
+      let leftSelectorsStr = result['left'];
+      let lastSimple = result['last'];
+      let simpleSelectors = getSimpleSelectors(lastSimple);
+
+      let matchResult = matchThis(simpleSelectors, element, leftSelectorsStr, false);
+
+      return matchResult;
+    }
+
+    console.log('TRUE  >>>', match("div #id.class", document.getElementById("id")));
+    console.log('FALSE >>>', match("div div #id.class", document.getElementById("id")));
+    console.log('TRUE  >>>', match("div p #id.class", document.getElementById("id")));
+  </script>
+</body>
+</html>

@@ -1,8 +1,10 @@
 学习笔记
 
+
 # CSS规则
 - @ Rules
 - Rules
+
 
 # @ Rules
 
@@ -23,6 +25,7 @@
 - @document
 - @color-profile
 - @font-feature
+
 
 # CSS规则
 
@@ -138,6 +141,161 @@ p { background-color: var(--not-a-color); }
 - max
 - clamp
 
+
 # 收集标准
 
 准备脚本
+
+
+# 选择器语法
+
+## 简单选择器
+- *
+- div  
+  注意namespace，比如svg中的a表示为：svg|a  
+- .cls
+- #id
+- [attr=value]
+- :hover
+- ::before
+
+## 复合选择器  
+以此按照类型、class、id、伪类选择器并排出现的简单选择器
+
+## 复杂选择器  
+复合选择器之间使用`<sp>`、`>`、`~`、`+`、`||`连接的形式  
+其中`||`为level4的选择器
+
+
+
+# 选择器优先级
+
+> 选择器优先级实际上是对一个复杂选择其中出现的所有简单选择器的计数
+```
+#id div.a#id  
+
+[0,       2,   1,      1]  
+inline    id   class   type  
+
+S = 0 * N**3 + 2 * N**2 + 1 * N**1 + 1
+取N = 1000000 <- 6个0
+S = 200001000001
+```
+理论上N取得足够大即可  
+> 老版本IE6上为了节省空间，使用N=256, 结果造成256个class等于1个id
+> 之后大部分浏览器都选择了65536
+
+参考文章 [https://developer.mozilla.org/zh-CN/docs/Web/CSS/Specificity](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Specificity)  
+摘抄其中一部分结论：  
+
+下面列表中，选择器类型的优先级是递增的：  
+- 类型选择器（例如，h1）和伪元素（例如，::before）  
+- 类选择器 (例如，.example)，属性选择器（例如，[type="radio"]）和伪类（例如，:hover）  
+- ID 选择器（例如，#example）  
+
+对优先级**没有影响**的选择器类型：
+- 通配选择符（universal selector）（\*）  
+- 关系选择符（combinators）（+, >, ~, ' ', ||）  
+- 否定伪类（negation pseudo-class）  
+
+但是，**在 :not() 内部声明的选择器会影响优先级**
+
+由上结论，完成*练习2*答案为：
+```
+// 请写出一下4种选择器的优先级
+div#a.b .c[id=x]
+[0, 1, 3, 1]
+
+#a:not(#b)
+[0, 2, 0, 0]
+
+*.a
+[0, 0, 1, 0]
+
+div.a
+[0, 0, 1, 1]
+```
+
+
+# 伪类
+
+> 支持的非常早，但是浏览器差异很大
+
+## 链接/行为
+- :any-link  
+  any-link匹配所有超链接  
+- :link :visited  
+  link是还没有访问的超链接  
+  visited是已经访问过的超链接  
+  **一旦使用了link或visited，就只能修改文字颜色了**处于安全考虑
+- :hover
+- :active
+- :focus
+- :target
+
+## 树形结构
+- :empty
+- :nth-child()  
+  比较复杂，even|odd|第几个  
+- :nth-last-child()  
+  从后往前数
+- :first-child :last-child :only-child
+
+> 不建议使用破坏回溯原则的选择器
+
+## 逻辑型
+- :not  
+  当前唯一可用，里面只能写复合选择器
+- :where :has  
+  level4的，目前不可用  
+
+
+# 伪元素
+- ::before
+- ::after  
+  declaration中增加一个content  
+  可以增加一个相当于正常的dom节点  
+- ::first-line  
+  第一行选择器  
+- ::first-letter  
+  用不存在的标签把一定代码括起来变得可操作  
+
+**before**和**after**相当于：
+```
+<div>
+<::before/>
+content
+<::after/>
+</div>
+```
+**first-letter**相当于：
+```
+<div>
+<::first-letter>c</::first-letter>ontent
+</div>
+```
+
+first-line选择器只支持：
+- font
+- color
+- background
+- word-spacing
+- letter-spacing
+- text-decoration
+- text-transform
+- line-height
+
+first-letter：
+- first-line支持的
+- float
+- vertical-align
+- 盒模型
+
+> 思考题：  
+> 为什么first-letter可以设置display: block，但是first-line就不行呢？ 
+
+答：  
+因为首字母无论怎么变，都是首字母，不会对阅读造成影响。但是首行设置了其他样式，可能会造成第一行的内容发生变化，造成歧义，所以对其进行了限制，我是这么认为的。
+
+
+
