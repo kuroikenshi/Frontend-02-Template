@@ -141,7 +141,7 @@ CSS排版基于三种流：
 ![demo效果2](./004_demoEffect2.png)  
 
 再加一行，就变成了 **最底下一行文字的基线** :  
-![demo效果2](./005_demoEffect3.png)  
+![demo效果3](./005_demoEffect3.png)  
 
-结论： **行内盒的基线根据自己内部的内容变化，不建议使用基线对齐，建议使用vertical-align: top / bottom / middle**  
-
+结论： **行内盒的基线根据自己内部的内容变化，不建议使用基线对齐，建议使用vertical-align: text-top / text-bottom / middle**  
+![demo效果4](./006_demoEffect4.png)  
