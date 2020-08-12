@@ -119,7 +119,7 @@ CSS排版基于三种流：
 文字字母的样式是由字体来决定的
 
 英文字母描述的方法：
-![英文字母描述的方法](./001_efont.png)
+![英文字母描述的方法](./002_efont.png)
 
 中英文混排的5条主要基线：
 ![中英文混排的5条主要基线](./002_mix.png)
@@ -138,10 +138,104 @@ CSS排版基于三种流：
 默认基线对齐，使用盒的 **下边缘去与基线对齐**   
 
 在其中加文字，会发现基线就变了，变成了 **文字的基线** ：  
-![demo效果2](./004_demoEffect2.png)  
+![demo效果2](./003_demoEffect2.png)  
 
 再加一行，就变成了 **最底下一行文字的基线** :  
-![demo效果3](./005_demoEffect3.png)  
+![demo效果3](./003_demoEffect3.png)  
 
 结论： **行内盒的基线根据自己内部的内容变化，不建议使用基线对齐，建议使用vertical-align: text-top / text-bottom / middle**  
-![demo效果4](./006_demoEffect4.png)  
+![demo效果4](./003_demoEffect4.png)  
+
+
+## 正常流块级排布
+
+### 浮动
+相当于先按普通流排版后，再向浮动方向推出去，然后重新计算当前行盒  
+
+浮动会叠加，可通过clear设置强制换行  
+
+> 因为正常流布局很困难，所以后来出现了只是用float来布局的一种模式  
+因为float对象间的布局很像正常流  
+可以满足一些人类直觉上的需求  
+float不认br换行 -> 用clear属性来换行
+
+### Margin-collapse
+margin在盒模型中会发生堆叠，margin坍塌（margin collapse)，会使用最大margin作为留白  
+注意： **margin-collapse只会发生在BFC中**  
+
+## BFC合并
+
+### Block
+- Block Container:  里面有BFC的
+  - 能容纳正常流的盒，里面就有BFC，想想有哪些？
+
+- Block-level Box: 外面有BFC的
+
+- Block Box = Block Container + Block-level Box:  里外都有BFC的  
+  **重要，理解BFC合并的基础**
+
+### Block Container
+装BFC的容器  
+
+> 基本上是一些display的效果  
+
+- block
+- inline-block
+- table-cell  
+  table-row里边要装table-cell，所以不是，但是table-cell是  
+- flex item  
+  flex本身不是，但是子元素flex-item，如果没有特殊指定，都是Block Container  
+- grid cell  
+- table-caption  
+
+### Block-level Box
+
+> 大多数display属性都有一对值，一个是Block level的，一个是inline level的
+
+Block-level
+- block
+- flex
+- table
+- grid
+- ...
+
+Inline-level
+- inline-block
+- inline-flex
+- inline-table
+- inline-grid
+- ...  
+
+有一种非常**特殊**的display叫**run-in**  
+跟着自己的上一个元素来  
+虽然有，但是实际中不用  
+
+
+### BFC
+什么样的盒会创建BFC呢？
+- floats  
+  浮动元素里边会创建正常流  
+- 绝对定位的元素  
+- Block Containers但不是block-box的  
+  - flex items
+  - grid cell
+  - ...
+
+- 带有overflow不是visible的其他block-boxes
+
+如何去记忆：  
+默认能容纳正常流的盒，都认为他会创建BFC  
+只有一种**例外：里外都是BFC，并且overflow是visible**
+
+### BFC合并
+发生在**里外都是BFC，并且overflow是visible**，即上述的例外  
+
+#### 影响float
+
+用来对比的图A，创建BFC，不合并的情况：  
+![对比图A，创建BFC，不合并](./005_bfc_1a.png)
+
+将overflow设置为visible，BFC合并，效果：
+![合并BFC](./005_bfc_1b.png)
+
+#### 边距折叠
