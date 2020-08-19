@@ -56,5 +56,122 @@ HTML中包含的namespace有:
 HTML5中会把HTML和XHTML写法作为两种不同的语法供使用者选择，所以HTML5中没有这两种的区分了  
 所以无论HTML5.1还是5.2中，就只有XML的namespace了
 
----
+------
+
+## HTML语义化
+> HTML是一个语义系统，所以不关心表现对不对，优先关心语义是否正确  
+> 标签不够或者并不了解某个标签的语义的时候，用基本标签+class来表示，如：注释用`<p class="note"></p>`
+
+页面代码语义化的好坏直接影响到 **`SEO优化`** 的效果
+
+### 常用语义化标签
+- aside  
+  主要内容无关的，一般是工具、菜单之类的，可以存在多个  
+
+- main  
+  主要内容，仅允许出现一次  
+
+- article  
+  文章
+
+- hgroup  
+  标题组，包含h1\~h6    
+
+- abbr
+  缩写，使用`title`属性描述下缩写内容，如：  
+  `<abbr title="World Wide Web">WWW</abbr>`  
+  显示为：<abbr title="World Wide Web">WWW</abbr>  
+
+- hr
+  横线，语义上是break的意思
+
+- p  
+  文本段落  
+
+- em
+  表现为加粗，语义为一句话当中的重音，要强调的事儿
+
+- strong  
+  表现为加粗，不改变语义，只表示当前这个词很重要  
+
+- figure  
+  标签组，用来组合img和figcaption
+
+- img  
+  图片  
+
+- figcaption  
+  图片的描述，图表的标注等  
+
+- ul、ol、li  
+  无序、有序、单位项，注意无序和有序的语义项  
+
+  > 目录上想用2.1、2.2这类文字，应该用ul还是ol呢？  
+  > 还是应该用ol，用css去调整显示的内容
+
+- nav  
+  表示导航性质的内容
+
+- div  
+  块级内容  
+
+- **dfn**  
+  表示概念的定义，比如`<dfn>World Wide Web</dfn>表示xxx`  
+  显示为：<dfn>World Wide Web</dfn>表示xxx  
+
+- samp  
+  表示举例，例子，可以扩pre  
+
+- pre  
+  表示预先调整好的文本，内容还是会被转义，还是需要处理`<`等符号
+
+- code  
+  是预先定义的文本，但是是代码，在pre中再加一层code
+
+- footer  
+  表示底部，表示body的底部，不一定非得放footer中，article中也可以有footer和header  
+
+### 层级结构
+```
+html
+ ├──head
+ │   └──title
+ └──body
+     ├──aside
+     │   └──nav
+     │       └──ul、ol
+     │           └──li (*n)
+     ├──main (也可以不加main)
+     │   └──article
+     │       ├──hgroup
+     │       │   └──h1~h6
+     │       ├──p.note
+     │       │   ├──abbr
+     │       │   └──strong
+     │       ├──p
+     │       │   ├──abbr
+     │       │   └──strong
+     │       ├──figure
+     │       │   ├──img
+     │       │   └──figcaption
+     │       ├──div、nav
+     │       │   └──ul、ol
+     │       │       └──li (*n)
+     │       │
+     │       ├──h1~h6
+     │       ├──p
+     │       │   └──dfn
+     │       └──samp
+     │           └──pre
+     │               └──code
+     └──footer
+```
+
+按照以上层级和标签语义，可以很清晰的了解当前页面每一块儿是什么内容，怎么组合到一起的，这就是语义化
+
+> 疑问：header一般什么时候用？跟h1\~h6是怎么样的关系？
+
+扩展阅读: [HTML标签嵌套规则](https://www.softwhy.com/article-33-1.html)
+
+------
 
