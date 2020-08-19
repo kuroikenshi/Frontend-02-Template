@@ -175,3 +175,145 @@ html
 
 ------
 
+## HTML语法  
+
+### 合法元素  
+- Element: `<tagname>...</tagname>`  
+- Text: `text`  
+- Comment: `<!-- comments -->`  
+- DocumentType: `<!Doctype html>`  
+- ProcessingInstruction: `<?a 1?>`  
+  预处理节点  
+  供其他程序去预处理的特殊节点  
+  结构上是由一个 **处理器名字** 跟一个 **不知道是什么的数据**，以一个 **空格** 分割  
+  理论上讲 `a 1` 就是把 `1` 传给 `a`  
+  但是线上不应出现带问号的语法……  
+  设计的不是很成功，没人用……  
+  所有预处理都是自己发明一套符号去处理  
+- CDATA: `<![CDATA[]]>`  
+  其实只是一种特殊的语法  
+  产生的也是文本节点  
+  文本不需要考虑转义问题  
+  特性继承自 **XML** 
+
+### 字符引用语法
+- `&#161;` 即 `&#{数字};`  
+  引用ASCII码为161的字符  
+- `&amp;`
+- `&lt;`
+- `&quot;`
+
+> 在 **html5** 中没有加字符引用的实体，已经基本够用了
+
+------
+
+# 浏览器API
+
+> 重要性角度讲，7、80%都是DOM API，其他的还有BOM API  
+
+**BOM(Browser Object Model)** 浏览器对象模型  
+
+> 听起来好像是包含DOM的一个词, 其实并不是，它只是很小的一组API  
+> 最早也是浏览器私有的名称  
+> 没有特别好的名字来指代所有浏览器的API  
+> 这里我们称为Browser API  
+
+## DOM API
+DOM API分为4个系列  
+
+- 其中一个系列是废的，traversal系列API  
+  可以访问DOM树的所有节点的自动迭代工具，用了比不用还麻烦，不推荐  
+
+- 节点API
+
+- 事件API
+
+- Range API  
+  更精确操纵DOM树，效率更高，但是难以理解和使用  
+
+**节点继承图**  
+```
+Node: 所有节点的基础类型
+│
+├───Element: 元素型节点，跟标签组对应，80%~90%Node都是Element
+│   │
+│   ├───HTMLElement
+│   │   │
+│   │   ├───HTMLAnchorElement -> <a>标签
+│   │   ├───HTMLAppletElement
+│   │   ├───HTMLAreaElement
+│   │   ├───HTMLAudioElement
+│   │   ├───HTMLBaseElement
+│   │   ├───HTMLBodyElement
+│   │   └───……
+│   │
+│   └───SVGElement
+│       │
+│       ├───SVGAElement
+│       ├───SVGAltGlyphElement
+│       └───……
+│
+├───Document: 文档根节点
+│
+├───CharacterData: 字符数据
+│   │
+│   ├───Text: 文本节点
+│   │   │
+│   │   └───CDATASection: CDATA节点
+│   │
+│   ├───Comment: 注释
+│   │
+│   └───ProcessingInstruction: 处理信息
+│
+├───DocumentFragment: 文档片段
+│
+└───DocumentType: 文档类型
+```
+
+#### 导航类操作
+
+分为 **节点的导航** 和 **元素的导航**  
+因为代码中会出现很多回车、空格、tab等字符，所以会出现很多空的node，所以出现元素的导航
+
+##### 节点的导航
+- parentNode
+- childNodes
+- firstChild
+- lastChild
+- nextSibling
+- previousSibling
+
+##### 元素的导航
+- parentElement
+- children
+- firsetElementChild
+- lastElementChild
+- nextElementSibling
+- previousElementSibling
+
+> parentElement和parentNode的功能是重复的……
+
+#### 修改操作
+- appendChild
+- insertBefore
+- removeChild
+- replaceChild
+
+`appendChild`和`insertBefore`为一组，可以满足所有空隙的操作，因为 *最小化原则* 所以就没有 ~`insertAfter`~  
+
+按照 *最小化原则* ，其实`replaceChild`也是多余的，但是设计原则在历史上是不断变化的……谁知道是啥情况  
+
+#### 高级操作
+- compareDocumentPosition  
+  用于比较两个节点关系的函数  
+- contains  
+  检查一个节点是否包含另一个节点的函数  
+- isEqualNode  
+  检查两个节点是否完全 **相同** (只要DOM树结构相同，即相同)  
+- isSameNode  
+  (废弃的，可能是出于多语言考虑……) 检查两个节点是否是 **同一节点** ，实际上在JavaScript中可以使用`===`  
+- cloneNode  
+  复制一个节点，如果传入参数`true`，则会连同子元素做深拷贝  
+
+------
+
