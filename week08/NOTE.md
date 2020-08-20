@@ -221,7 +221,7 @@ html
 ## DOM API
 DOM API分为4个系列  
 
-- 其中一个系列是废的，traversal系列API  
+- 其中一个系列是废的，traversal系列API (`iterator`)  
   可以访问DOM树的所有节点的自动迭代工具，用了比不用还麻烦，不推荐  
 
 - 节点API
@@ -314,6 +314,141 @@ Node: 所有节点的基础类型
   (废弃的，可能是出于多语言考虑……) 检查两个节点是否是 **同一节点** ，实际上在JavaScript中可以使用`===`  
 - cloneNode  
   复制一个节点，如果传入参数`true`，则会连同子元素做深拷贝  
+
+------
+
+### 事件API
+- target.addEventListener(type, listener [, options])
+- target.addEventListener(type, listener [, useCapture])
+- target.addEventListener(type, listener [, useCapture, *wantsUntrusted*]) // Gecko/Mozilla only
+
+#### options
+- capture  
+  冒泡模式 or 捕获模式  
+- once  
+  一次性  
+- passive  
+  是否不会产生副作用的事件  
+  比如高频的事件onScroll，传入passive可以达到提升性能的效果  
+  如果想要触发事件时，阻止浏览器默认处理，一定要传入`true`  
+  移动端浏览器，默认把passive设置成了`false`  
+
+#### Event: 冒泡与捕获  
+冒泡与捕获是浏览器处理事件响应的一个机制  
+与事件监听无关，任何一个事件的触发，两个过程都会发生  
+
+任何事件都有一个 **先捕获** ， **再冒泡** 的过程  
+
+**捕获**: 从外到内，一层层去计算到底事件发生在哪个元素上  
+
+**冒泡**: 已经计算出触发的元素，层层向外去触发，让元素响应事件的过程  
+
+通常情况下，**冒泡** 更符合人类的直觉，所以通常不传参的情况下，默认冒泡  
+
+------
+
+### Range API  
+
+> 问题：把一个元素的所有元素逆序
+> 节点操作需要4次  
+> 考点1: Dom的collection是一个living collection  
+> 考点2: insert的时候，不需要先做其他操作  
+> RangeAPI更高效  
+
+代码:  
+```
+<div id="a">
+  <span>1</span>
+  <p>2</p>
+  <a>3</a>
+  <div>4</div>
+</div>
+
+
+let el = document.getElementById('a');
+
+// Wrong demo
+function reverseChildren(element) {
+  let children = Array.prototype.slice.call(element.childNodes);
+  for (let child of children) {
+    element.removeChild(child);
+  }
+  children.reverse();
+  for (let child of children) {
+    element.appendChild(child);
+  }
+}
+// Right demo 1 (正常解法，得一半分)
+function reverseChildren(element) {
+  var l = element.childNodes.length;
+  while(l-- > 0) {
+    element.appendChild(element.childNodes[l])
+  }
+}
+
+reverseChildren(el);
+```
+
+#### Range定义
+- HTML文档流里的一个有起始点和终止点的范围  
+- 不能跳过  
+- 起始点和终止点只要是先后顺序就行，不考虑结构  
+- 起始点和终止点是指定字符index，即range可以只包含半个节点，不考虑节点的边界  
+
+#### Range用法
+- var range = new Range()  
+- range.setStart(element, 9)  
+- range.setEnd(element, 4)  
+- var range = document.getSelection().getRangeAt(0)  
+  selection一般只支持一个range，所以指定0即可  
+
+##### 便捷的，常用的，忽略空白节点的  
+- range.setStartBefore  
+- range.setEndBefore  
+- range.setStartAfter  
+- range.setEndAfter  
+- range.selectNode  
+  选中某个节点作为range  
+- range.selectNodeContents  
+  选中一个元素的所有内容  
+
+##### 创建range后的操作方法  
+- var fragment = range.extractContents()  
+  把range中选取的内容从dom树中摘出来  
+- range.insertNode(document.createTextNode('aaaa'))  
+  加入一定的内容  
+
+**fragment节点**在插入到dom树中，会将自己的子节点插入，自己不插入  
+
+#### 使用案例
+```
+<div id="a">123<span style="background-color: pink;">456789</span>0123456789</div>
+子节点       0  1                                     1.0          2
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+            "123"节点的index=3为这个节点之后的位
+            "0123456789"节点的index=3是3456……
+
+let range = new Range();
+range.setStart(document.getElementById('a').childNodes[0], 3);
+range.setEnd(document.getElementById('a').childNodes[2], 3);
+```
+
+由此的reverse终极答案:  
+```
+function reverseChildren(element) {
+  let range = new Range();
+  range.selectNodeContents(element);
+
+  let fragment = range.extractContents(); // 这里容器里已经空了
+  var l = fragment.childNodes.length;
+  while (l-- > 0) {
+    fragment.appendChild(fragment.childNodes[l]);
+  }
+  element.appendChild(fragment);
+}
+```
+
+> fragment是不需要重拍的，故性能很高
 
 ------
 
