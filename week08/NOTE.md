@@ -452,3 +452,108 @@ function reverseChildren(element) {
 
 ------
 
+# CSSOM
+
+> Dom是对html文档描述的抽象  
+
+> CSSAPI严格来说也需要通过DOM去访问的  
+
+- 通过document.styleSheets去访问
+
+- HTMl中通过`<style>`标签和`<link>`去使用css
+
+- document.styleSheets中依次出现使用的css
+  通过 **rules** 属性去访问  
+
+## Rules
+- document.styleSheets[0].cssRules  
+  类似数组的collection  
+
+- document.styleSheets[0].insertRule("p {color:pink;}", 0)
+  插入一个字符串，指定位置
+
+- document.styleSheets[0].removeRule(0)  
+
+## Rule
+- CSSStyleRule
+  - selectorText String  
+  - style K-V结构  
+
+## getComputedStyle
+- window.getComputedStyle(elment, pseudoElement);
+  - element 想要获取的元素
+  - pseudoElement 可选，伪元素
+
+**可以在动画中获取当前的样式**
+
+------
+
+## CSSOM View
+
+CSS View API的语言已经跟css的模型不太一致了
+
+### window
+#### 窗口尺寸
+- **window.innerHeight, window.innerWidth**  
+  浏览器内容占的尺寸
+- window.outerWidth, window.outerHeight  
+  浏览器窗口总共占的值
+- **window.devicePixelRatio (DPR)**  
+  屏幕上的物理像素和代码中的px比例  
+  - 一般设备是1:1  
+  - Retina屏是1:2
+  - 部分安卓设备是1:3
+- window.screen  
+  - .width 、 .height
+  - .availWidth 、 .availHeight 
+
+#### open
+- window.open("about:blank", "\_blank", "width=100,height=100,left=100,right=100")  
+  加了第三个属性后，可以通过js控制其大小和样式  
+
+scroll
+- scrollTop
+- scrollLeft
+- scrollWidth
+- scrollHeight
+- scroll(x, y) / scrollTo(x, y)  
+  滚动到绝对位置
+- scrollBy(x, y)  
+  在当前基础上滚动一个差值
+- scollIntoView()  
+  强制滚动到可见区域
+
+window.scroll
+- scrollX
+- scrollY
+- scroll(x, y) / scrollTo(x, y)
+- scrollBy(x, y)
+
+### layout
+- getClientRects()  
+  在element上获取生成的盒，多个
+- getBoundingClientRect()  
+  取出所有盒包含的区域  
+
+------
+
+## 其他的API
+
+所有API来源: 标准化组织
+- khronos
+  - WebGL
+
+- ECMA
+  - ECMAScript
+
+- WHATWAG
+  - HTML
+
+- W3C
+  - webaudio
+  - CG/WG
+    CG(Community Group) 社区组  
+    WG(Working Group) 制定标准的组  
+    IG(Interesting Group) 兴趣组  
+
+
