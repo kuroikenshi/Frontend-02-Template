@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .traffic-light-ctn {
+      display: inline-block;
+      border: solid 5px gray;
+      margin: 10px;
+      padding: 15px;
+      border-radius: 70px;
+    }
+    .traffic-light {
+      width: 80px;
+      height: 80px;
+      display: inline-block;
+      border: solid 5px gray;
+      border-radius: 100px;
+      box-sizing: border-box;
+      background: lightgray;
+    }
+    .traffic-light + .traffic-light {
+      margin-left: 10px;
+    }
+    .red.on {
+      background: red;
+    }
+    .yellow.on {
+      background: #ffeb3b;
+    }
+    .green.on {
+      background: #00ff0a;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="traffic-light-ctn">
+    <div class="traffic-light red"></div>
+    <div class="traffic-light yellow"></div>
+    <div class="traffic-light green"></div>
+  </div>
+  <script>
+    function green() {
+      Array.from(document.querySelectorAll('.traffic-light')).map(n => n.classList.remove('on'));
+      document.querySelector('.green').classList.add('on');
+    }
+    function yellow() {
+      Array.from(document.querySelectorAll('.traffic-light')).map(n => n.classList.remove('on'));
+      document.querySelector('.yellow').classList.add('on');
+    }
+    function red() {
+      Array.from(document.querySelectorAll('.traffic-light')).map(n => n.classList.remove('on'));
+      document.querySelector('.red').classList.add('on');
+    }
+
+    function sleep(t) {
+      return new Promise((resolve, reject) => {
+        setTimeout(resolve, t);
+      });
+    }
+
+    function go() {
+      green();
+      sleep(1000).then(() => {
+        yellow();
+        return sleep(200);
+      }).then(() => {
+        red();
+        return sleep(500);
+      }).then(go);
+    }
+
+    go();
+  </script>
+</body>
+</html>

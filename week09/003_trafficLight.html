@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .traffic-light-ctn {
+      display: inline-block;
+      border: solid 5px gray;
+      margin: 10px;
+      padding: 15px;
+      border-radius: 70px;
+    }
+    .traffic-light {
+      width: 80px;
+      height: 80px;
+      display: inline-block;
+      border: solid 5px gray;
+      border-radius: 100px;
+      box-sizing: border-box;
+      background: lightgray;
+    }
+    .traffic-light + .traffic-light {
+      margin-left: 10px;
+    }
+    .red.on {
+      background: red;
+    }
+    .yellow.on {
+      background: #ffeb3b;
+    }
+    .green.on {
+      background: #00ff0a;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="traffic-light-ctn">
+    <div class="traffic-light red"></div>
+    <div class="traffic-light yellow"></div>
+    <div class="traffic-light green"></div>
+  </div>
+  <script>
+    const r = document.querySelector('.red');
+    const y = document.querySelector('.yellow');
+    const g = document.querySelector('.green');
+    const all = document.querySelectorAll('.traffic-light');
+    let state = 0;
+    function lightOn() {
+      Array.from(all).map(n => n.classList.remove('on'));
+      switch(state) {
+        case 0:
+          g.classList.add('on');
+          setTimeout(() => {
+            state = 1;
+            lightOn();
+          }, 10000);
+          break;
+        case 1:
+          y.classList.add('on');
+          setTimeout(() => {
+            state = 2;
+            lightOn();
+          }, 2000);
+          break;
+        case 2:
+          r.classList.add('on');
+          setTimeout(() => {
+            state = 0;
+            lightOn();
+          }, 5000);
+          break;
+        default:
+          state = 1;
+          lightOn();
+      }
+    }
+    lightOn();
+  </script>
+</body>
+</html>

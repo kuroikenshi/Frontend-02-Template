@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .cell {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: gray;
+      border-bottom: solid 1px white;
+      border-right: solid 1px white;
+      vertical-align: top;
+    }
+    .cell.path {
+      background-color: #00ff0a;
+    }
+    .cell.path-best {
+      background-color: blueviolet;
+    }
+    #container {
+      width: 701px;
+      line-height: 7px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  <button onclick="localStorage['map'] = JSON.stringify(map)">save</button>
+  <button onclick="path(map, [0, 0], [50, 50])">path</button>
+  <button onclick="findPath(map, [0, 0], [50, 50])">启发式路径查找算法</button>
+  <script>
+    class Sorted {
+      constructor(data, compare) {
+        this.data = data.slice();
+        this.compare = compare || ((a, b) => a - b);
+        this.length = this.data.length;
+      }
+      // 每次take拿出最小的
+      take () {
+        if (!this.data.length) {
+          return;
+        }
+        let min = this.data[0];
+        let minIndex = 0;
+
+        for (let i = 1; i < this.data.length; i++) {
+          if (this.compare(this.data[i], min) < 0) {
+            min = this.data[i];
+            minIndex = i;
+          }
+        }
+
+        this.data[minIndex] = this.data[this.data.length - 1];
+        this.data.pop();
+        return min;
+      }
+      give (v) {
+        this.data.push(v);
+      }
+      get length() {
+        return this.data.length;
+      }
+    }
+
+    // 地图编辑器
+    let map = localStorage['map'] ? JSON.parse(localStorage['map']) : Array(10000).fill(0);
+    let container = document.getElementById('container');
+    for (let y = 0; y < 100; y++) {
+      for (let x = 0; x < 100; x++) {
+        let cell = document.createElement('div');
+        cell.classList.add('cell');
+
+        if (map[100*y + x] == 1) {
+          cell.style.backgroundColor = 'black';
+        }
+
+        cell.addEventListener('mousemove', () => {
+          if (mousedown) {
+            if (clear) {
+              cell.style.backgroundColor = '';
+              map[100*y + x] = 0;
+            }
+            else {
+              cell.style.backgroundColor = 'black';
+              map[100*y + x] = 1;
+            }
+          }
+        })
+        container.appendChild(cell);
+      }
+    }
+    let mousedown = false;
+    let clear = false;
+    document.addEventListener('mousedown', e => {
+      mousedown = true;
+      clear = (e.which === 3);
+    });
+    document.addEventListener('mouseup', () => mousedown = false);
+    document.addEventListener('contextmenu', e => e.preventDefault());
+
+    // 可视化用异步方法
+    function sleep(t) {
+      return new Promise((resolve, reject) => {
+        setTimeout(resolve, t);
+      });
+    }
+
+    // 寻路算法
+    async function path(map, start, end) {
+      var queue = [start];
+
+      async function insert(x, y) {
+        // 处理边界
+        if (x < 0 || x >= 100 || y < 0 || y >= 100) {
+          return;
+        }
+        // 如果是已经寻过的点(值为2)或者是墙(值为1)，也不放到队列里去
+        if (map[y * 100 + x]) {
+          return;
+        }
+
+        await sleep(16);
+        document.querySelectorAll('.cell')[y * 100 + x].classList.add('path');
+
+        map[y * 100 + x] = 2;
+        queue.push([x, y]);
+      }
+
+      while(queue.length) {
+        let [x, y] = queue.shift();
+        // console.log(x, y);
+        if (x === end[0] && y === end[1]) {
+          return true;
+        }
+        await insert(x - 1, y);
+        await insert(x + 1, y);
+        await insert(x, y - 1);
+        await insert(x, y + 1);
+      }
+
+      return false;
+    }
+
+    // 启发式寻路算法
+    async function findPath(map, start, end) {
+      let table = Object.create(map);
+      let queue = new Sorted([start], (a, b) => distance(a) - distance(b))
+
+      async function insert(x, y, pre) {
+        if (x < 0 || x >= 100 || y < 0 || y >= 100) {
+          return ;
+        }
+
+        // TODO: 修改
+        if (table[y * 100 + x]) {
+          return ;
+        }
+
+        await sleep(16);
+        container.children[y * 100 + x].classList.add('path');
+        table[y * 100 + x] = pre; // TODO: 修改
+        queue.give([x, y]);
+      }
+
+      function distance(point) {
+        return (point[0] - end[0]) ** 2 + (point[1] - end[1]) ** 2;
+      }
+
+      console.log('queue.length', queue.length);
+      while (queue.length) {
+        let [x, y] = queue.take();
+        console.log(x, y);
+        if (x === end[0] && y === end[1]) {
+          let path = [];
+
+          while(x != start[0] || y != start[1]) {
+            path.push(map[y * 100 + x]);
+            [x, y] = table[y * 100 + x];
+            container.children[y * 100 + x].classList.add('path-best');
+          }
+
+          return path;
+        }
+
+        await insert(x - 1, y, [x, y]);
+        await insert(x, y - 1, [x, y]);
+        await insert(x + 1, y, [x, y]);
+        await insert(x, y + 1, [x, y]);
+
+        await insert(x - 1, y - 1, [x, y]);
+        await insert(x + 1, y - 1, [x, y]);
+        await insert(x - 1, y + 1, [x, y]);
+        await insert(x + 1, y + 1, [x, y]);
+      }
+    }    
+    
+  </script>
+</body>
+</html>
