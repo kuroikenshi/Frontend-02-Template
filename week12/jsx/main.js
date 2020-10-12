@@ -17,20 +17,35 @@ class Carousel extends Component {
       this.root.appendChild(child);
     }
 
-    // 手动拖拽
-    let move = event => {
-      console.log('mousemove');
-    }
-    let up = event => {
-      console.log('mouseup');
-
-      // 解除绑定
-      document.removeEventListener('mousemove', move);
-      document.removeEventListener('mouseup', up);
-    }
+    let position = 0;
 
     this.root.addEventListener('mousedown', event => {
-      console.log('mousedown');
+      let children = this.root.children;
+      let startX = event.clientX;
+
+      // 手动拖拽
+      let move = event => {
+        // clientX不受外界条件改变
+        let x = event.clientX - startX;
+        for (let child of children) {
+          child.style.transition = 'none';
+          child.style.transform = `translateX(${- position * 500 + x}px)`;
+        }
+        
+      }
+      let up = event => {
+        let x = event.clientX - startX;
+        position = position - Math.round(x / 500);
+
+        for (let child of children) {
+          child.style.transition = "";
+          child.style.transform = `translateX(${- position * 500}px)`;
+        }
+
+        // 解除绑定
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', up);
+      }
       
       // 绑定
       document.addEventListener('mousemove', move);
