@@ -17,16 +17,25 @@ class Carousel extends Component {
       this.root.appendChild(child);
     }
 
-    let current = 0;
+    let currentIndex = 0;
     setInterval(() => {
       let children = this.root.children;
-      ++current;
-      current = current % children.length;
-      console.log(current);
-      for (let child of children) {
-        child.style.transform = `translateX(-${current * 100}%)`;
-      }
-    }, 3000);
+      let nextIndex = (currentIndex + 1) % children.length;
+
+      let current = children[currentIndex];
+      let next = children[nextIndex];
+
+      next.style.transition = 'none';
+      next.style.transform = `translateX(${100 - nextIndex * 100}%)`;
+
+      setTimeout(() => {
+        next.style.transition = '';
+        current.style.transform = `translateX(${-100 - currentIndex * 100}%)`;
+        next.style.transform = `translateX(${- nextIndex * 100}%)`;
+
+        currentIndex = nextIndex;
+      }, 16);
+    }, 1000);
 
     return this.root;
   }
