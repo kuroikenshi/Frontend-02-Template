@@ -168,3 +168,30 @@ plugins: [['@babel/plugin-transform-react-jsx', ]]
 
 
 ```
+
+### 绑定鼠标拖拽的正确写法
+```
+let move = event => {
+  console.log('mousemove');
+}
+let up = event => {
+  console.log('mouseup');
+
+  // 这里监听document可以避免鼠标移出后监听不到，且现代浏览器中，移出浏览器范围都可以监听到
+  document.removeEventListener('mousemove', move);
+  document.removeEventListener('mouseup', up);
+}
+
+this.root.addEventListener('mousedown', event => {
+  console.log('mousedown');
+  
+  // 这里监听document可以避免鼠标移出后监听不到，且现代浏览器中，移出浏览器范围都可以监听到
+  document.addEventListener('mousemove', move);
+  document.addEventListener('mouseup', up);
+});
+```
+重点是：  
+- down之后再监听move和up，避免不必要的触发
+- 使用move和up的监听对象替换成document来避免出界造成的bug
+
+

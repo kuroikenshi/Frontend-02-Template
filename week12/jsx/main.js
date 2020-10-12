@@ -17,7 +17,29 @@ class Carousel extends Component {
       this.root.appendChild(child);
     }
 
-    let currentIndex = 0;
+    // 手动拖拽
+    let move = event => {
+      console.log('mousemove');
+    }
+    let up = event => {
+      console.log('mouseup');
+
+      // 解除绑定
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+    }
+
+    this.root.addEventListener('mousedown', event => {
+      console.log('mousedown');
+      
+      // 绑定
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', up);
+    });
+
+
+    // 自动播放
+    /* let currentIndex = 0;
     setInterval(() => {
       let children = this.root.children;
       let nextIndex = (currentIndex + 1) % children.length;
@@ -35,7 +57,7 @@ class Carousel extends Component {
 
         currentIndex = nextIndex;
       }, 16);
-    }, 1000);
+    }, 1000); */
 
     return this.root;
   }
