@@ -181,3 +181,63 @@ found 0 vulnerabilities
 由此可见，npm install被正确执行  
 
 
+## build工具
+
+### webpack
+设计上是为了将node的代码转化成浏览器使用的js  
+核心思路：打包成js，然后html去引用这个js
+
+#### 能力
+- 多文件合并
+  - 通过loader和plugin去控规则
+
+#### 安装
+全局安装：
+```
+npm install -g webpack-cli webpack
+```
+项目中安装：
+```
+npm install --save-dev webpack-cli
+```
+推荐使用`npx`，不会发生二次安装的情况
+```
+npx webpack
+```
+在本地已经安装的情况下，会直接执行
+
+#### Loader
+webpack的灵魂，在`module.rules`中定义  
+
+loader把一个 `source` 变成一个`目标代码`，可以认为loader是一个纯粹的文本转换
+
+## Babel工具
+把新版js变异成老版本js
+
+### 使用babel脚本工具
+
+#### 安装
+```
+npm install -g @babel/core @babel/cli
+```
+
+#### 编译
+```
+babel ./src/sample.js > 1.txt
+```
+发现并没有什么变化，因为没有配置
+
+#### 配置
+使用babel的路径下，创建`.babelrc`文件，JSON格式
+```
+{
+  "presets": ["@babel/preset-env"]
+}
+```
+常用的配置，保存成了`presets`，即预设  
+使用时需要提前安装，如
+```
+npm install --save-dev @babel/preset-env
+```
+
+通常使用方式为在webpack中配置"babel-loader"
