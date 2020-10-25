@@ -75,3 +75,109 @@ npm install -g yo
 ```
 yo toolchain
 ```
+
+**需要注意的是，可以给method前增加async来支持异步**
+
+### yo 交互
+使用`prompt`方法，来于用户进行交互
+```
+async method1() {
+  const answers = await this.prompt([
+    {
+      type: "input",
+      name: "name",
+      message: "Your project name",
+      default: this.appname // Default to current folder name
+    },
+    {
+      type: "confirm",
+      name: "cool",
+      message: "Would you like to enable the Cool feature?"
+    }
+  ]);
+
+  this.log("app name", answers.name);
+  this.log("cool feature", answers.cool);
+}
+```
+运行效果:
+```
+D:\ws\Frontend-02-Template\week16\toolchain>yo toolchain
+? Your project name demo
+? Would you like to enable the Cool feature? No
+app name demo
+cool feature false
+```
+
+### yo 文件系统
+在`generators/app/`下创建`templates/`路径，并创建`t.html`模板文件  
+内容为：  
+```
+<html>
+  <head>
+    <title><%= title %></title>
+  </head>
+</html>
+```
+`index.js`中方法修改:
+```
+async step1() {
+  this.fs.copyTpl(
+    this.templatePath('t.html'),
+    this.destinationPath('public/index.html'),
+    { title: 'Templating with Yeoman' }
+  );
+}
+```
+之后再一个新建的文件夹中，比如`demo/`中，打开命令行，运行：
+```
+D:\ws\Frontend-02-Template\week16\demo>yo toolchain
+   create public\index.html
+```
+提示创建了一个新文件`public\index.html`即为，使用模板 + 数据填充后生成的页面
+
+### yo的依赖
+对npm进行了包装  
+
+使用`this.npmInstall(['lodash'], {'save-dev': true });`来安装和使用npm  
+等同于`npm install lodash --save-dev`  
+
+`index.js`中增加方法:  
+```
+initPackage() {
+  const pkgJson = {
+    devDependencies: {
+      eslint: '^3.15.0'
+    },
+    dependencies: {
+      react: '^16.2.0'
+    }
+  };
+
+  // Extend or create package.json file in destination path
+  this.fs.extendJSON(this.destinationPath('package.json'), pkgJson);
+
+  this.npmInstall();
+}
+```
+还是在`demo/`中运行：
+```
+D:\ws\Frontend-02-Template\week16\demo>yo toolchain
+   create package.json
+   create public\index.html
+npm WARN deprecated circular-json@0.3.3: CircularJSON is in maintenance only, flatted is its successor.
+npm notice created a lockfile as package-lock.json. You should commit this file.
+npm WARN demo No description
+npm WARN demo No repository field.
+npm WARN demo No license field.
+
+added 144 packages from 156 contributors and audited 144 packages in 29.509s
+
+3 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+```
+由此可见，npm install被正确执行  
+
+
